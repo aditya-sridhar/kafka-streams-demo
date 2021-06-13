@@ -8,6 +8,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 public class KafkaStreamsDemo {
     public static void main(String[] args) {
@@ -36,6 +37,24 @@ public class KafkaStreamsDemo {
         props.putIfAbsent(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
-        streams.start();
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        try {
+            streams.start();
+            latch.await();
+        } catch (final Throwable e) {
+            System.exit(1);
+        }
+
+        Runtime.getRuntime().addShutdownHook(new Thread("streams-totalviews") {
+            @Override
+            public void run() {
+                streams.close();
+                latch.countDown();
+            }
+        });
+
+        System.exit(0);
     }
 }
