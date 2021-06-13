@@ -5,12 +5,14 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.log4j.BasicConfigurator;
-
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import java.util.Properties;
 
 public class KafkaStreamsDemo {
     public static void main(String[] args) {
         BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
 
         final Serde<String> stringSerde = Serdes.String();
         final Serde<Long> longSerde = Serdes.Long();
@@ -32,7 +34,6 @@ public class KafkaStreamsDemo {
         final Properties props = new Properties();
         props.putIfAbsent(StreamsConfig.APPLICATION_ID_CONFIG, "streams-totalviews");
         props.putIfAbsent(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.putIfAbsent(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
         streams.start();

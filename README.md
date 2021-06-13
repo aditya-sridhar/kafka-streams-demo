@@ -5,6 +5,7 @@ This repository shows how a simple kafka streams job can be written
 # Pre-requisites
 
 Please ensure Maven and Java are installed in your system
+
 Also ensure you have kafka installed in your system and that kafka is up and running.
 
 # Compiling the code
